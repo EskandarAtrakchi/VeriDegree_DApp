@@ -8,7 +8,7 @@ contract SimpleEduCertificate is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
 
-    // You (the deployer) are the only issuer
+    // the deployer are the only issuer
     address public owner;
 
     struct Certificate {
@@ -92,3 +92,5 @@ contract SimpleEduCertificate is ERC721URIStorage {
         return super._update(to, tokenId, auth);
     }
 }
+
+// contract address: 0x0F94b84E3e898B8ccbF2CdE51729a116a25A1dfa
