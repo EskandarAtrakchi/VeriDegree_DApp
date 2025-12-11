@@ -94,4 +94,7 @@ contract SimpleEduCertificate is ERC721URIStorage {
     }
 }
 
-// contract address: 0x0F94b84E3e898B8ccbF2CdE51729a116a25A1dfa
+// contract address: 0x0F94b84E3e898B8ccbF2CdE51729a116a25A1dfa // the deployed wallet!
+// deployed on BSC testnet
+// ABI available in lib/web3-provider.ts
+// contract address: 0xd9145CCE52D386f254917e481eB44e9943F39138 new deployment with new wallet 
