@@ -33,14 +33,15 @@ contract SimpleEduCertificate is ERC721URIStorage {
     }
 
     /**
-     * @notice Issue a new certificate NFT to a student.
-     * @param student         Student wallet
-     * @param tokenURI_       IPFS URI for the NFT metadata
-     * @param institutionName Name of the institution
-     * @param studentName     Full name of student
-     * @param degreeName      Degree / certificate name
-     * @param graduationDate  
-     */
+    * @notice Issue a new certificate NFT to a student.
+    * @param student         Student wallet
+    * @param tokenURI_       IPFS URI for the NFT metadata
+    * @param institutionName Name of the institution
+    * @param studentName     Full name of student
+    * @param degreeName      Degree / certificate name
+    * @param graduationDate  Date of graduation (YYYY-MM-DD)
+    */
+
     function issueCertificate(
         address student,
         string calldata tokenURI_,
