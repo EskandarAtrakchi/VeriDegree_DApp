@@ -94,8 +94,7 @@ contract SimpleEduCertificate is ERC721URIStorage {
     }
 }
 
-// contract address: 0x0F94b84E3e898B8ccbF2CdE51729a116a25A1dfa // the deployed wallet!
+// contract address: 0xf16e31f337a0197C3F65893e4F0C4e483e70b447
+// wallet deployed: 0xcF023Bc92DD211cB173a2b2DFdd81ad0EE6e28DD
 // deployed on SepoliaETH testnet
 // ABI available in lib/web3-provider.ts
-// contract address: 0xd9145CCE52D386f254917e481eB44e9943F39138 new deployment with new wallet 
-
