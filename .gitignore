@@ -1,0 +1,53 @@
+# v0 runtime files
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts
+
+# Environment variables - NEVER commit these with real credentials
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage
+.nyc_output
+
+# Next.js
+.next/
+out/
+dist/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Build
+build/
+
+# Local Vercel CLI
+.vercel
+
+# Misc
+*.bak
+*.tmp
+.cache/

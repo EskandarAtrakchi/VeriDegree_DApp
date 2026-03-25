@@ -1,0 +1,252 @@
+================================================================================
+VeriDegree DApp - Complete Setup Checklist
+================================================================================
+
+Follow this checklist to set up the project successfully on your PC.
+
+YOUR PINATA CREDENTIALS (Already configured!)
+================================================================================
+API Key:         f73dd98a8fea79f31463
+JWT Token:       A5zHFxm4fJbBBreUq3bcK2fnCuWh0m8JMKXVyN40TdU3QV8Cb4dxH7LbMbPVP2eC
+Gateway:         rose-known-carp-497.mypinata.cloud
+
+STEP 1: INITIAL SETUP
+================================================================================
+
+[ ] Download the project ZIP from v0
+[ ] Extract ZIP to your computer
+[ ] Remember the folder location: ___________________________
+[ ] Open terminal/command prompt
+[ ] Navigate to project folder: cd VeriDegreeDAppmain
+
+STEP 2: INSTALL NODE & PNPM
+================================================================================
+
+[ ] Check Node.js version: node --version (need 18+)
+    If not installed: https://nodejs.org/ (install LTS)
+
+[ ] Check pnpm version: pnpm --version
+    If not installed: npm install -g pnpm
+
+[ ] Verify Node/pnpm with:
+    - node --version
+    - npm --version
+    - pnpm --version
+
+STEP 3: INSTALL PROJECT DEPENDENCIES
+================================================================================
+
+[ ] Run: pnpm install
+    (This downloads all required packages - takes 2-3 minutes)
+
+[ ] Verify success by checking node_modules folder was created
+
+STEP 4: CREATE ENVIRONMENT FILE
+================================================================================
+
+[ ] Create .env.local file in project root:
+
+    Windows: Create blank file and name it ".env.local"
+    Mac/Linux: touch .env.local
+
+[ ] Copy and paste this into .env.local:
+
+    PINATA_API_KEY=f73dd98a8fea79f31463
+    PINATA_JWT=A5zHFxm4fJbBBreUq3bcK2fnCuWh0m8JMKXVyN40TdU3QV8Cb4dxH7LbMbPVP2eC
+    NEXT_PUBLIC_PINATA_GATEWAY=rose-known-carp-497.mypinata.cloud
+
+[ ] Save the file
+[ ] Verify .env.local exists in project root folder
+
+STEP 5: WALLET SETUP
+================================================================================
+
+[ ] Install MetaMask:
+    - Go to https://metamask.io/
+    - Download extension for your browser
+    - Click "Add to Browser"
+    - Create new wallet or import existing
+    - Save your seed phrase in secure location
+
+[ ] Switch MetaMask to Sepolia Testnet:
+    - Click network selector (top-left of MetaMask)
+    - Click "Show test networks" toggle (if not visible)
+    - Select "Sepolia"
+
+[ ] Verify MetaMask is on Sepolia network
+
+STEP 6: GET TESTNET ETH
+================================================================================
+
+[ ] Get free Sepolia ETH:
+    - Go to https://www.sepoliafaucet.com/
+    - Enter your MetaMask wallet address
+    - Click "Claim"
+    - Wait 15 minutes for ETH to appear
+
+[ ] Check MetaMask - you should see ETH balance
+    (If not, wait a bit longer and refresh)
+
+STEP 7: START DEVELOPMENT SERVER
+================================================================================
+
+[ ] In terminal, run: pnpm dev
+
+[ ] Wait for message: "ready - started server on 0.0.0.0:3000"
+
+[ ] Open browser: http://localhost:3000
+
+[ ] You should see:
+    - CertifyChain title
+    - "Connect Wallet" button
+    - Landing page
+
+STEP 8: TEST THE APP
+================================================================================
+
+[ ] Click "Connect Wallet"
+    - MetaMask pops up
+    - Click "Next" then "Connect"
+
+[ ] Select "Issuer" role
+
+[ ] Fill in test certificate:
+    Student Wallet:  0x742d35Cc6634C0532925a3b844Bc7e7595f37bEb
+    Institution:     Test University
+    Student Name:    John Doe
+    Degree:          Bachelor of Science
+    Graduation:      2024-06-15
+    Image:           (optional, skip for now)
+
+[ ] Click "Issue Certificate"
+
+[ ] Approve in MetaMask (pay gas fee with testnet ETH)
+
+[ ] Wait for "Certificate issued successfully!"
+
+[ ] Certificate is now on Ethereum Sepolia! ✓
+
+STEP 9: VERIFY CERTIFICATE
+================================================================================
+
+[ ] Click "Change Role" (top navigation)
+[ ] Select "Verifier"
+[ ] Enter wallet: 0x742d35Cc6634C0532925a3b844Bc7e7595f37bEb
+[ ] Click "Verify Certificate"
+[ ] See the certificate details ✓
+
+SUCCESS CHECKLIST
+================================================================================
+
+[ ] Node.js 18+ installed
+[ ] pnpm installed globally
+[ ] Project dependencies installed (node_modules exists)
+[ ] .env.local file created with Pinata credentials
+[ ] MetaMask installed and on Sepolia network
+[ ] Have testnet ETH in wallet
+[ ] Dev server running on http://localhost:3000
+[ ] Can connect wallet
+[ ] Successfully issued a certificate
+[ ] Certificate appears on blockchain
+[ ] Can verify certificate for other wallets
+
+If all checked: YOU'RE DONE! 🎉
+
+TROUBLESHOOTING
+================================================================================
+
+Problem: "pnpm: command not found"
+Solution: npm install -g pnpm
+
+Problem: "Pinata JWT is not configured"
+Solution: 
+  1. Check .env.local exists in project root
+  2. Check PINATA_JWT line is correct
+  3. Restart dev server: Ctrl+C, then pnpm dev
+
+Problem: "MetaMask not showing"
+Solution:
+  1. MetaMask extension installed?
+  2. Check top-right corner of browser for MetaMask icon
+  3. If missing: Go to https://metamask.io/ and install
+
+Problem: "Not on Sepolia network"
+Solution:
+  1. Open MetaMask
+  2. Click network dropdown (top-left)
+  3. Toggle "Show test networks" (Settings → Advanced)
+  4. Select "Sepolia"
+
+Problem: "Insufficient balance" or "Not enough ETH"
+Solution:
+  1. Get testnet ETH: https://www.sepoliafaucet.com/
+  2. Enter your wallet address
+  3. Click "Claim"
+  4. Wait 15 minutes
+  5. Check MetaMask
+
+Problem: Certificate upload fails
+Solution:
+  1. Check internet connection
+  2. Verify PINATA_JWT in .env.local
+  3. Check browser console (F12) for errors
+  4. Try again - Pinata can be slow sometimes
+
+NEXT STEPS
+================================================================================
+
+After setup, you can:
+
+1. Issue more test certificates
+2. Test with different student wallets
+3. Verify certificates from other wallets
+4. Upload custom certificate images
+5. Deploy to production (see DEPLOYMENT.md)
+
+IMPORTANT NOTES
+================================================================================
+
+⚠️  Use SEPOLIA TESTNET only (not mainnet!)
+⚠️  Testnet ETH is FREE - don't pay real money
+⚠️  Each wallet can hold only 1 certificate
+⚠️  Never share your .env.local file
+⚠️  Never commit .env.local to Git
+⚠️  Keep your MetaMask seed phrase safe
+
+GETTING HELP
+================================================================================
+
+If you get stuck:
+
+1. Check QUICK_START.md (5-minute guide)
+2. Check SETUP.md (detailed guide)
+3. Check CONFIG_SUMMARY.md (configuration details)
+4. Check browser console: Press F12 to see errors
+5. Check terminal output for error messages
+
+DOCUMENTATION
+================================================================================
+
+All documentation is in the project root:
+
+- README.md           → Project overview
+- QUICK_START.md      → 5-minute setup
+- SETUP.md            → Detailed setup
+- CONFIG_SUMMARY.md   → Configuration details
+- DEPLOYMENT.md       → Production guide
+- DOCS_INDEX.md       → Documentation index
+- .env.local.example  → Environment template
+
+START HERE: QUICK_START.md or DOCS_INDEX.md
+
+================================================================================
+Version: 1.0.0
+Status: Ready for Local Development ✓
+Last Updated: 2026
+================================================================================
+
+Questions? Check QUICK_START.md first!
+Ready to start? Run: pnpm dev
+Then visit: http://localhost:3000
+
+Happy coding! 🚀

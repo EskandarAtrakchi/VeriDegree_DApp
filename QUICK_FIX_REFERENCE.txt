@@ -1,0 +1,160 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║         CERTIFICATE RETRIEVAL FIX - QUICK REFERENCE                             ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+ISSUE: Certificates issue successfully but can't be retrieved by verifier/viewer
+
+FIXES APPLIED:
+─────────────────────────────────────────────────────────────────────────────────
+
+1. ENHANCED IPFS RETRIEVAL (lib/ipfs-provider.ts)
+   ✓ Better error handling with specific error types
+   ✓ 15-second timeout to prevent hanging
+   ✓ Automatic fallback to multiple IPFS gateways
+   ✓ Content-type validation
+   ✓ Detailed logging with [IPFS] prefix
+
+2. IMPROVED LOGGING (all files)
+   ✓ [IPFS] - IPFS operations
+   ✓ [Web3] - Blockchain queries
+   ✓ [Viewer] - Viewer dashboard
+   ✓ [Verifier] - Verifier dashboard
+   ✓ Clear error messages
+
+3. GRACEFUL DEGRADATION
+   ✓ Shows certificate even if image fails
+   ✓ Continues with other certificates if one fails
+   ✓ No hanging/blocking operations
+
+─────────────────────────────────────────────────────────────────────────────────
+TESTING CHECKLIST
+─────────────────────────────────────────────────────────────────────────────────
+
+□ Open DevTools (F12) -> Console tab
+□ Issue new certificate
+  □ Should see [IPFS] upload logs
+  □ Should see contract call log
+  □ Should complete in <2 min
+
+□ Verify certificate with student wallet
+  □ Should see [Web3] query logs
+  □ Should see [Verifier] retrieval logs
+  □ Should display certificate details
+  □ Image should load (or show gracefully)
+
+□ View your certificates
+  □ Should see [Viewer] logs
+  □ Should list all certificates
+  □ Should display images
+  □ No errors in console
+
+─────────────────────────────────────────────────────────────────────────────────
+IF YOU SEE ERRORS
+─────────────────────────────────────────────────────────────────────────────────
+
+ERROR: "Failed to fetch"
+→ Check console for [IPFS] logs
+→ Look for which gateway failed
+→ Verify .env.local has NEXT_PUBLIC_PINATA_GATEWAY
+
+ERROR: 401/403 Access Denied
+→ Gateway token expired
+→ Regenerate token in Pinata dashboard
+→ Add to .env.local: NEXT_PUBLIC_PINATA_GATEWAY_TOKEN
+
+ERROR: Timeout
+→ Gateway is slow
+→ Will automatically try fallback gateways
+→ Check network connection
+
+ERROR: No certificates found
+→ Check [Web3] logs for block range
+→ Verify student address is correct
+→ Check Etherscan for confirmed transaction
+
+─────────────────────────────────────────────────────────────────────────────────
+ENVIRONMENT VARIABLES (.env.local)
+─────────────────────────────────────────────────────────────────────────────────
+
+REQUIRED:
+PINATA_JWT=A5zHFxm4fJbBBreUq3bcK2fnCuWh0m8JMKXVyN40TdU3QV8Cb4dxH7LbMbPVP2eC
+NEXT_PUBLIC_PINATA_GATEWAY=rose-known-carp-497.mypinata.cloud
+
+OPTIONAL (but recommended):
+NEXT_PUBLIC_PINATA_GATEWAY_TOKEN=your_gateway_token
+
+─────────────────────────────────────────────────────────────────────────────────
+GATEWAY FALLBACK ORDER
+─────────────────────────────────────────────────────────────────────────────────
+
+1. Your Pinata Gateway: rose-known-carp-497.mypinata.cloud
+2. Pinata Gateway: gateway.pinata.cloud
+3. IPFS.io: ipfs.io
+4. Cloudflare: cloudflare-ipfs.com
+
+App tries each in order until one succeeds.
+
+─────────────────────────────────────────────────────────────────────────────────
+CONSOLE LOG EXAMPLES - SUCCESSFUL FLOW
+─────────────────────────────────────────────────────────────────────────────────
+
+ISSUING:
+[IPFS] Uploading image to Pinata IPFS (via API route)
+[IPFS] Image uploaded to IPFS: https://...
+[IPFS] Uploading metadata to Pinata IPFS (via API route)
+[IPFS] Metadata uploaded to IPFS: QmXxx...
+[Web3] Calling issueCertificate on contract
+[Web3] Certificate issued successfully
+
+VERIFYING:
+[Web3] Fetching certificates for address: 0x...
+[Web3] Found 1 transfer event(s)
+[Verifier] Found certificates: 1
+[IPFS] Retrieving from IPFS URI: ipfs://QmXxx...
+[IPFS] Attempting to fetch from: https://rose-known-carp-497.mypinata.cloud/ipfs/QmXxx...
+[IPFS] Successfully retrieved metadata from: https://...
+
+─────────────────────────────────────────────────────────────────────────────────
+MANUAL GATEWAY TEST
+─────────────────────────────────────────────────────────────────────────────────
+
+In browser console:
+fetch('https://rose-known-carp-497.mypinata.cloud/ipfs/[CID]')
+  .then(r => r.json())
+  .then(d => console.log('Success:', d))
+  .catch(e => console.error('Failed:', e))
+
+Replace [CID] with actual IPFS hash from certificate
+
+─────────────────────────────────────────────────────────────────────────────────
+FILES CHANGED
+─────────────────────────────────────────────────────────────────────────────────
+
+✓ lib/ipfs-provider.ts - IPFS retrieval enhancement
+✓ lib/web3-provider.ts - Web3 logging added
+✓ components/verifier-dashboard.tsx - Error handling improved
+✓ components/viewer-dashboard.tsx - Error handling improved
+
+NEW FILES:
+✓ TROUBLESHOOTING_PINATA.md - Full troubleshooting guide
+✓ FIX_CERTIFICATE_RETRIEVAL.md - Technical details
+✓ QUICK_FIX_REFERENCE.txt - This file
+
+─────────────────────────────────────────────────────────────────────────────────
+NEXT STEPS
+─────────────────────────────────────────────────────────────────────────────────
+
+1. Download updated project ZIP
+2. Extract to computer
+3. Run: pnpm install
+4. Create .env.local from .env.local.example
+5. Add your credentials
+6. Run: pnpm dev
+7. Test certificate flow
+8. Check console for [IPFS], [Web3] logs
+9. Refer to TROUBLESHOOTING_PINATA.md if issues
+
+═════════════════════════════════════════════════════════════════════════════════
+For detailed troubleshooting: See TROUBLESHOOTING_PINATA.md
+For technical details: See FIX_CERTIFICATE_RETRIEVAL.md
+═════════════════════════════════════════════════════════════════════════════════
