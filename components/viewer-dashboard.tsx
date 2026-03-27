@@ -86,7 +86,7 @@ export default function ViewerDashboard({ address }: ViewerDashboardProps) {
             console.log("[Viewer] Successfully fetched metadata for token", cert.tokenId)
           } catch (err) {
             console.error("[Viewer] Failed to fetch metadata for token", cert.tokenId, err)
-            // Continue anyway - certificate is still valid
+            // Continue anyway, certificate is still valid
           }
           certsWithMetadata.push({ ...cert, metadata })
         }

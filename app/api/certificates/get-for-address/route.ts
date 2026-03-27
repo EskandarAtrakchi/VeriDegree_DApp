@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
 
     console.log("[API] Fetching certificates for address:", address);
 
-    // ✅ Reliable RPC
+    // Reliable RPC
     const RPC_URL =
       process.env.SEPOLIA_RPC_URL ||
       "https://ethereum-sepolia.publicnode.com";

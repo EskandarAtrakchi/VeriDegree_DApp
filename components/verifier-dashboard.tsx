@@ -107,7 +107,7 @@ export default function VerifierDashboard({ address }: VerifierDashboardProps) {
             console.log("[Verifier] Successfully fetched metadata for token", cert.tokenId)
           } catch (err) {
             console.error("[Verifier] Failed to fetch metadata for token", cert.tokenId, ":", err)
-            // Continue anyway - certificate data is still valid even without metadata image
+            // Continue anyway, certificate data is still valid even without metadata image
             metadataMap[cert.tokenId] = {}
           }
         }
