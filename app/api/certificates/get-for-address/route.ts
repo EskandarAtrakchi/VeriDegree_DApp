@@ -41,26 +41,26 @@ const CONTRACT_ABI = [
     type: "event",
   },
 ];
-
+// API route to fetch certificates for a given wallet address
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { address } = body;
-
+    // Validate input
     if (!address) {
       return NextResponse.json(
         { error: "Wallet address is required" },
         { status: 400 }
       );
     }
-
+    // Basic validation for Ethereum address format
     if (!address.match(/^0x[a-fA-F0-9]{40}$/)) {
       return NextResponse.json(
         { error: "Invalid wallet address format" },
         { status: 400 }
       );
     }
-
+    // Log the incoming request for debugging
     console.log("[API] Fetching certificates for address:", address);
 
     // Reliable RPC
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
         { status: 503 }
       );
     }
-
+    // Create contract instance
     const contract = new ethers.Contract(
       CONTRACT_ADDRESS,
       CONTRACT_ABI,
@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
       ethers.ZeroAddress,
       address
     );
-
+    // Fetch logs in chunks to avoid timeouts
     let events: ethers.Log[] = [];
 
     console.log("[API] Fetching logs from deployment block...");
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
       const end = Math.min(start + CHUNK_SIZE - 1, currentBlock);
 
       console.log(`[API] Fetching from ${start} to ${end}`);
-
+      // eslint-disable-next-line no-await-in-loop
       try {
         const chunk = await contract.queryFilter(filter, start, end);
         events = events.concat(chunk);
@@ -121,21 +121,21 @@ export async function POST(req: NextRequest) {
     console.log("[API] Total events found:", events.length);
 
     const certificates = [];
-
+    // Process each event to extract certificate details
     for (const event of events) {
       try {
         const log = event as ethers.EventLog;
         const tid = Number(log.args[2]);
 
         const cert = await contract.certificates(tid);
-
+        // Verify current ownership
         let currentOwner;
         try {
           currentOwner = await contract.ownerOf(tid);
         } catch {
           continue;
         }
-
+        // Only include if the current owner matches the requested address
         if (currentOwner.toLowerCase() === address.toLowerCase()) {
           certificates.push({
             tokenId: tid,
@@ -151,7 +151,7 @@ export async function POST(req: NextRequest) {
         console.error("[API] Error processing event:", err);
       }
     }
-
+    // Return the certificates in the response
     return NextResponse.json(
       {
         success: true,
@@ -162,7 +162,7 @@ export async function POST(req: NextRequest) {
     );
   } catch (error: any) {
     console.error("[API] Error fetching certificates:", error);
-
+    // Return a generic error response
     return NextResponse.json(
       {
         success: false,
