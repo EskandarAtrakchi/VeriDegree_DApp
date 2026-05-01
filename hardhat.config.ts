@@ -6,14 +6,15 @@ export default defineConfig({
   plugins: [hardhatToolboxViemPlugin],
 
   solidity: {
-  version: "0.8.20",
-  settings: {
-    optimizer: {
-      enabled: true,
-      runs: 200,
+    version: "0.8.24",
+    settings: {
+      evmVersion: "paris",
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
     },
   },
-},
 
 
   mocha: {
