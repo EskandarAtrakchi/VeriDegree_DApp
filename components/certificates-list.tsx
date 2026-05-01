@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getAllIssuedCertificates } from "@/lib/web3-provider"
-
+ 
+// This component fetches and displays a list of all certificates issued by the connected issuer.
 interface CertificatesListProps {
   issuerAddress: string
   refresh: number
 }
 
+// Define the structure of a certificate entry for type safety and easier handling of certificate data.
 interface CertEntry {
   tokenId: number
   studentAddress: string
@@ -18,13 +20,16 @@ interface CertEntry {
   graduationDate: string
   issuedAt: number
 }
-
+ 
+// The CertificatesList component is responsible for fetching and displaying the list of certificates issued by the connected issuer. It uses the getAllIssuedCertificates function to retrieve the data and manages loading state to provide feedback to the user while data is being fetched.
 export default function CertificatesList({ issuerAddress, refresh }: CertificatesListProps) {
   const [certificates, setCertificates] = useState<CertEntry[]>([])
   const [loading, setLoading] = useState(true)
 
+  // useEffect is used to fetch the certificates when the component mounts or when the issuerAddress or refresh props change. It sets the loading state to true while fetching and updates the certificates state with the retrieved data. If there's an error during fetching, it logs the error to the console.
   useEffect(() => {
     const fetchCertificates = async () => {
+      // Ensure that the issuerAddress is available before attempting to fetch certificates. If it's not available, we can skip the fetch and set loading to false. 
       try {
         setLoading(true)
         const certs = await getAllIssuedCertificates()
@@ -36,9 +41,11 @@ export default function CertificatesList({ issuerAddress, refresh }: Certificate
       }
     }
 
+    // Only fetch certificates if the issuerAddress is available. This prevents unnecessary fetch attempts when the component first mounts and the issuerAddress is not yet set.
     fetchCertificates()
   }, [issuerAddress, refresh])
 
+  // The component renders a card that displays the list of issued certificates. If the data is still loading, it shows a loading spinner. If there are no certificates, it displays a message indicating that no certificates have been issued yet. Otherwise, it maps over the certificates array and displays each certificate's details in a styled format.
   return (
     <Card className="border-border">
       <CardHeader>
