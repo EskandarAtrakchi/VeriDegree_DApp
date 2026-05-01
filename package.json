@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "hardhat test",
+    "compile": "hardhat compile"
   },
   "repository": {
     "type": "git",
@@ -13,20 +15,17 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "bugs": {
     "url": "https://github.com/EskandarAtrakchi/VeriDegree_DApp/issues"
   },
   "homepage": "https://github.com/EskandarAtrakchi/VeriDegree_DApp#readme",
   "devDependencies": {
     "@nomicfoundation/hardhat-ignition": "^3.1.4",
-    "@nomicfoundation/hardhat-toolbox": "^7.0.0",
     "@nomicfoundation/hardhat-toolbox-viem": "^5.0.4",
     "@types/chai": "^5.2.3",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.19.17",
     "chai": "^6.2.2",
-    "forge-std": "github:foundry-rs/forge-std#v1.9.4",
     "hardhat": "^3.4.3",
     "mocha": "^11.7.5",
     "typescript": "~5.8.0",
