@@ -1,0 +1,30 @@
+name: Hardhat Tests
+
+on:
+  push:
+    branches: ["**"]   # runs on any branch
+  pull_request:
+  workflow_dispatch:   # ✅ THIS ENABLES MANUAL BUTTON
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Compile
+        run: npx hardhat compile
+
+      - name: Run tests
+        run: npx hardhat test
