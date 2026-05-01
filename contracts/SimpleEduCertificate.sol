@@ -56,16 +56,29 @@ contract SimpleEduCertificate is ERC721URIStorage {
         return _tokenId;
     }
 
-    // 🔒 SOULBOUND: block all transfers
-    function transferFrom(address, address, uint256) public pure override {
+    // SOULBOUND (correct overrides)
+
+    function transferFrom(address, address, uint256)
+        public
+        pure
+        override(ERC721, IERC721)
+    {
         revert("Soulbound: non-transferable");
     }
 
-    function safeTransferFrom(address, address, uint256) public pure override {
+    function safeTransferFrom(address, address, uint256)
+        public
+        pure
+        override(ERC721, IERC721)
+    {
         revert("Soulbound: non-transferable");
     }
 
-    function safeTransferFrom(address, address, uint256, bytes memory) public pure override {
+    function safeTransferFrom(address, address, uint256, bytes memory)
+        public
+        pure
+        override(ERC721, IERC721)
+    {
         revert("Soulbound: non-transferable");
     }
 }
