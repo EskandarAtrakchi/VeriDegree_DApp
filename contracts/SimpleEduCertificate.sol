@@ -4,8 +4,8 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract SimpleEduCertificate is ERC721URIStorage {
-    uint256 private _tokenId;
 
+    uint256 private _tokenId;
     address public owner;
 
     struct Certificate {
@@ -56,13 +56,16 @@ contract SimpleEduCertificate is ERC721URIStorage {
         return _tokenId;
     }
 
-    // 🔒 Soulbound (non-transferable)
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId
-    ) internal override {
-        require(from == address(0) || to == address(0), "Soulbound: non-transferable");
-        super._beforeTokenTransfer(from, to, tokenId);
+    // 🔒 SOULBOUND: block all transfers
+    function transferFrom(address, address, uint256) public pure override {
+        revert("Soulbound: non-transferable");
+    }
+
+    function safeTransferFrom(address, address, uint256) public pure override {
+        revert("Soulbound: non-transferable");
+    }
+
+    function safeTransferFrom(address, address, uint256, bytes memory) public pure override {
+        revert("Soulbound: non-transferable");
     }
 }
