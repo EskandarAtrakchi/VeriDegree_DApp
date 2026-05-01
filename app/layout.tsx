@@ -4,9 +4,12 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
+// Load Google Fonts using Next.js font optimization
 const _geist = Geist({ subsets: ["latin"] })
+// Load the monospaced variant of the Geist font for code elements
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
+// Combine the loaded fonts into a single className string
 export const metadata: Metadata = {
   title: "CertifyChain - Educational Certificate NFTs",
   description: "Issue, verify, and manage educational certificates on blockchain",
@@ -35,6 +38,7 @@ export const metadata: Metadata = {
   },
 }
 
+// Root layout component that wraps the entire application
 export default function RootLayout({
   children,
 }: Readonly<{
