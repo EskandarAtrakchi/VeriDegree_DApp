@@ -8,13 +8,17 @@ import ViewerDashboard from "@/components/viewer-dashboard"
 import VerifierDashboard from "@/components/verifier-dashboard"
 import LandingPage from "@/components/landing-page"
 
+// Define the possible user roles in the application
 type Role = "issuer" | "viewer" | "verifier" | null
 
+// Main page component that handles wallet connection and role selection
 export default function Home() {
+  // State variables to manage wallet connection status, user address, and selected role
   const [isConnected, setIsConnected] = useState(false)
   const [address, setAddress] = useState<string>("")
   const [role, setRole] = useState<Role>(null)
 
+  // useEffect hook to check if the user is already connected to a wallet when the component mounts
   useEffect(() => {
     const checkConnection = async () => {
       if (typeof window !== "undefined" && window.ethereum) {
@@ -24,15 +28,18 @@ export default function Home() {
             setIsConnected(true)
             setAddress(accounts[0])
           }
+          // Listen for account changes to update the connection status and address accordingly
         } catch (error) {
           console.error("Error checking connection:", error)
         }
       }
     }
 
+    //  Call the checkConnection function when the component mounts
     checkConnection()
   }, [])
 
+  //  If the user is not connected to a wallet, show the landing page with a wallet connection prompt
   if (!isConnected) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
@@ -50,6 +57,7 @@ export default function Home() {
     )
   }
 
+  // If the user is connected but has not selected a role, show the role selection screen
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
       <Navigation
