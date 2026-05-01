@@ -5,10 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract SimpleEduCertificate is ERC721URIStorage {
 
-    // simple counter (replaces Counters.sol)
     uint256 private _tokenIdCounter;
-
-    // the deployer is the only issuer
     address public owner;
 
     struct Certificate {
@@ -20,7 +17,6 @@ contract SimpleEduCertificate is ERC721URIStorage {
         uint256 issuedAt;
     }
 
-    // tokenId => certificate info
     mapping(uint256 => Certificate) public certificates;
 
     modifier onlyOwner() {
@@ -32,9 +28,6 @@ contract SimpleEduCertificate is ERC721URIStorage {
         owner = msg.sender;
     }
 
-    /**
-    * @notice Issue a new certificate NFT to a student.
-    */
     function issueCertificate(
         address student,
         string calldata tokenURI_,
@@ -43,17 +36,15 @@ contract SimpleEduCertificate is ERC721URIStorage {
         string calldata degreeName,
         string calldata graduationDate
     ) external onlyOwner returns (uint256) {
-        require(student != address(0), "Invalid student address");
 
-        // increment counter FIRST (starts from 1 instead of 0)
-        uint256 newTokenId = ++_tokenIdCounter;
+        require(student != address(0), "Invalid student");
 
-        // Mint NFT to the student
-        _safeMint(student, newTokenId);
-        _setTokenURI(newTokenId, tokenURI_);
+        uint256 tokenId = ++_tokenIdCounter;
 
-        // Save certificate data
-        certificates[newTokenId] = Certificate({
+        _safeMint(student, tokenId);
+        _setTokenURI(tokenId, tokenURI_);
+
+        certificates[tokenId] = Certificate({
             institutionName: institutionName,
             studentName: studentName,
             degreeName: degreeName,
@@ -62,24 +53,16 @@ contract SimpleEduCertificate is ERC721URIStorage {
             issuedAt: block.timestamp
         });
 
-        return newTokenId;
+        return tokenId;
     }
 
-    // ----------------------------
-    // Soulbound logic (non-transferable)
-    // ----------------------------
-    function _update(
+    // ❗ SOULBOUND (v4 compatible way)
+    function _beforeTokenTransfer(
+        address from,
         address to,
-        uint256 tokenId,
-        address auth
-    ) internal override returns (address) {
-        address from = _ownerOf(tokenId);
-
-        // block transfers (only allow minting & burning)
-        if (from != address(0) && to != address(0)) {
-            revert("Soulbound: non-transferable");
-        }
-
-        return super._update(to, tokenId, auth);
+        uint256 tokenId
+    ) internal override {
+        require(from == address(0) || to == address(0), "Soulbound: non-transferable");
+        super._beforeTokenTransfer(from, to, tokenId);
     }
 }
