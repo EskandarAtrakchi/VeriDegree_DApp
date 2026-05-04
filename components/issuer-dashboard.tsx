@@ -1,19 +1,23 @@
 "use client"
 
+// This component serves as the main dashboard for issuers, allowing them to issue new certificates and view existing ones. It manages the state for showing the issue form and refreshing the certificates list after issuing a new certificate.
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import IssueCertificateForm from "@/components/issue-certificate-form"
 import CertificatesList from "@/components/certificates-list"
 
+// Props for the IssuerDashboard component, which includes the issuer's blockchain address.
 interface IssuerDashboardProps {
   address: string
 }
 
+//  The main dashboard component for issuers, allowing them to issue new certificates and view existing ones.
 export default function IssuerDashboard({ address }: IssuerDashboardProps) {
   const [showForm, setShowForm] = useState(false)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
 
+  // Renders the issuer dashboard with options to issue new certificates and view existing ones.
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
