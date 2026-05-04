@@ -1,4 +1,4 @@
-VeriDegree
+# VeriDegree
 VeriDegree is a blockchain-based application that enables institutions to issue and verify academic
 certificates as non-transferable NFTs (Soulbound Tokens) on the Ethereum network.
 Features:
