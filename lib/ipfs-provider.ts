@@ -1,8 +1,8 @@
-// Pinata dedicated gateway - defaults to your gateway but can be overridden
+// Pinata dedicated gateway defaults to gateway but can be overridden
 const RAW_GATEWAY =
   process.env.NEXT_PUBLIC_PINATA_GATEWAY ?? "rose-known-carp-497.mypinata.cloud"
 
-// Token required for restricted Pinata gateway (optional)
+// Token required for restricted Pinata gateway
 const GATEWAY_TOKEN = process.env.NEXT_PUBLIC_PINATA_GATEWAY_TOKEN ?? ""
 
 // Public IPFS gateways as fallback
@@ -13,7 +13,7 @@ const PUBLIC_GATEWAYS = [
 ]
 
 function buildGatewayUrl(cid: string): string {
-  // If user has a dedicated Pinata gateway configured, use that first
+  // If user has a dedicated Pinata gateway configured
   if (RAW_GATEWAY) {
     const base = RAW_GATEWAY.startsWith("http")
       ? RAW_GATEWAY
@@ -21,31 +21,37 @@ function buildGatewayUrl(cid: string): string {
     const url = `${base}/ipfs/${cid}`
     return GATEWAY_TOKEN ? `${url}?pinataGatewayToken=${GATEWAY_TOKEN}` : url
   }
-  // Otherwise use public Pinata gateway
+  // Otherwise public Pinata gateway
   return `${PUBLIC_GATEWAYS[0]}/ipfs/${cid}`
 }
 
+// Generate fallback URLs for public gateways in case the primary gateway fails
 function getFallbackUrls(cid: string): string[] {
   return PUBLIC_GATEWAYS.map((gw) => `${gw}/ipfs/${cid}`)
 }
 
+// Uploads a file to IPFS via a Pinata API route and returns the accessible URL of the uploaded file.
 export const uploadImageToIPFS = async (file: File): Promise<string> => {
   try {
+    // We create a FormData object and append the file to it, then send a POST request to our API route that handles the Pinata upload
     console.log("Uploading image to Pinata IPFS (via API route)")
     const formData = new FormData()
     formData.append("file", file)
 
+    // The API route will handle the interaction with Pinata, including authentication and error handling
     const response = await fetch("/api/pinata/upload-file", {
       method: "POST",
       body: formData,
     })
 
+    // If not we log the error details and throw an error to be handled by the calling function.
     if (!response.ok) {
       const errorText = await response.text()
       console.error("Pinata API response:", response.status, errorText)
       throw new Error(`Pinata upload failed: ${response.status} - ${errorText}`)
     }
 
+    // If the upload is successful, we parse the response to get the IPFS hash of the uploaded file, construct the accessible URL using our gateway configuration, and return it.
     const result = await response.json()
     const ipfsHash = result.IpfsHash
     const imageURL = buildGatewayUrl(ipfsHash)
@@ -57,6 +63,7 @@ export const uploadImageToIPFS = async (file: File): Promise<string> => {
   }
 }
 
+// Uploads JSON metadata to IPFS via a Pinata API route and returns the IPFS URI (ipfs://CID) to be stored on-chain.
 export const uploadToIPFS = async (data: object): Promise<string> => {
   try {
     console.log("Uploading metadata to Pinata IPFS (via API route)")
@@ -69,12 +76,14 @@ export const uploadToIPFS = async (data: object): Promise<string> => {
       body: JSON.stringify(data),
     })
 
+    // If the upload fails, we log the error details and throw an error to be handled by the calling function.
     if (!response.ok) {
       const errorText = await response.text()
       console.error("Pinata API response:", response.status, errorText)
       throw new Error(`Pinata upload failed: ${response.status} - ${errorText}`)
     }
 
+    // If the upload is successful, we parse the response to get the IPFS hash of the uploaded metadata and return it in the format ipfs://CID, which can be stored on-chain.
     const result = await response.json()
     const ipfsHash = result.IpfsHash
     console.log("Metadata uploaded to IPFS:", ipfsHash)
@@ -86,6 +95,7 @@ export const uploadToIPFS = async (data: object): Promise<string> => {
   }
 }
 
+// Retrieves JSON metadata from IPFS given an IPFS URI (ipfs://CID) by trying multiple gateways.
 export const retrieveFromIPFS = async (ipfsURI: string): Promise<any> => {
   try {
     if (!ipfsURI) {
@@ -93,8 +103,10 @@ export const retrieveFromIPFS = async (ipfsURI: string): Promise<any> => {
       return {}
     }
 
+    // We first extract the CID from the provided IPFS URI, then we build a list of gateway URLs
     console.log("[IPFS] Retrieving from IPFS URI:", ipfsURI)
 
+    // Extract CID from the IPFS URI by removing the "ipfs://" prefix and any leading "/ipfs/" segments
     const cid = ipfsURI.replace("ipfs://", "").replace(/^\/ipfs\//, "")
     console.log("[IPFS] Extracted CID:", cid)
 
@@ -110,9 +122,11 @@ export const retrieveFromIPFS = async (ipfsURI: string): Promise<any> => {
       try {
         console.log("[IPFS] Attempting to fetch from:", url)
 
+        //If the fetch fails due to a network error, timeout, or non-200 response, we catch the error, log it, and continue to the next gateway in the list.
         const controller = new AbortController()
         const timeoutId = setTimeout(() => controller.abort(), 15000) // 15 second timeout
 
+        //perform a GET request to the gateway URL with the appropriate headers and signal for timeout handling.
         const response = await fetch(url, {
           method: "GET",
           headers: {
@@ -123,16 +137,19 @@ export const retrieveFromIPFS = async (ipfsURI: string): Promise<any> => {
 
         clearTimeout(timeoutId)
 
+        // If we receive a 401 or 403 status code, it indicates that access to the gateway is denied, so we log a warning and skip to the next gateway without treating it as a an actual error.
         if (response.status === 401 || response.status === 403) {
           console.warn("[IPFS] Access denied (401/403) from gateway:", url)
           continue
         }
 
+        // If we receive a non-200 response, we log the status and skip to the next gateway.
         if (!response.ok) {
           console.warn(`[IPFS] Gateway returned ${response.status}:`, url)
           continue
         }
 
+        //check if the content type of the response is JSON, as we expect metadata to be in JSON format. If it's not JSON,log a warning and skip to the next gateway.
         const contentType = response.headers.get("content-type") || ""
         if (!contentType.includes("application/json")) {
           console.warn("[IPFS] Response is not JSON from:", url)
@@ -152,6 +169,7 @@ export const retrieveFromIPFS = async (ipfsURI: string): Promise<any> => {
       }
     }
 
+    // If all gateways fail, we log an error and return an empty object. The calling function should handle the case where metadata cannot be retrieved.
     console.error("[IPFS] All gateways failed for CID:", cid)
     console.error("[IPFS] Failed IPFS URI:", ipfsURI)
     return {}
@@ -161,6 +179,7 @@ export const retrieveFromIPFS = async (ipfsURI: string): Promise<any> => {
   }
 }
 
+// The generateCertificateMetadata function creates a structured metadata object for a certificate, which includes the institution name, student name, degree name, graduation date, and an image URL
 export const generateCertificateMetadata = (
   institutionName: string,
   studentName: string,
@@ -182,6 +201,7 @@ export const generateCertificateMetadata = (
   }
 }
 
+// The ipfsToGatewayUrl function takes an IPFS URI (in the format ipfs://CID) and converts it to a fully qualified URL using the configured gateway
 export const ipfsToGatewayUrl = (ipfsURI: string): string => {
   if (!ipfsURI) return ""
   const cid = ipfsURI.replace("ipfs://", "").replace(/^\/ipfs\//, "")
