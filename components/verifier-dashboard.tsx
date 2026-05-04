@@ -8,10 +8,12 @@ import { Badge } from "@/components/ui/badge"
 import { CONTRACT_ADDRESS } from "@/lib/web3-provider"
 import { retrieveFromIPFS, ipfsToGatewayUrl } from "@/lib/ipfs-provider"
 
+// The VerifierDashboard component provides an interface for users to verify if a specific wallet address holds any valid educational certificates. 
 interface VerifierDashboardProps {
   address: string
 }
 
+// Define the structure of a certificate result and the overall verification result for type safety and easier handling of the data returned from the backend API during the verification process.
 interface CertificateResult {
   tokenId: number
   institutionName: string
@@ -22,56 +24,71 @@ interface CertificateResult {
   issuedAt: number
 }
 
+// The VerificationResult interface defines the structure of the data returned from the backend API when verifying a wallet address.
 interface VerificationResult {
   found: boolean
   certificates: CertificateResult[]
   metadataMap: Record<number, any>
 }
 
+// The VerifierDashboard component provides an interface for users to verify if a specific wallet address holds any valid educational certificates.
 const RAW_GATEWAY =
   process.env.NEXT_PUBLIC_PINATA_GATEWAY ?? "rose-known-carp-497.mypinata.cloud"
 const PINATA_GATEWAY = RAW_GATEWAY.startsWith("http")
   ? RAW_GATEWAY
   : `https://${RAW_GATEWAY}`
 
+  // The resolveImageUrl function takes the metadata object of a certificate and extracts the image URL. 
 function resolveImageUrl(metadata: any): string | undefined {
   const image = metadata?.image
   if (!image || typeof image !== "string") return undefined
 
+  // If the image URL is an IPFS URI, convert it to a gateway URL. Otherwise, return the original URL.
   if (image.startsWith("ipfs://")) {
     return ipfsToGatewayUrl(image)
   }
 
+  // If it's a regular URL, return it as is.
   return image
 }
 
+// The resolveMetadataHttpUrl function takes an IPFS URI and converts it to a HTTP gateway URL. 
 function resolveMetadataHttpUrl(ipfsURI: string | undefined): string | undefined {
   if (!ipfsURI) return undefined
   if (!ipfsURI.startsWith("ipfs://")) return ipfsURI
   return ipfsToGatewayUrl(ipfsURI)
 }
 
+// The VerifierDashboard component provides an interface for users to verify if a specific wallet address holds any valid educational certificates. 
 export default function VerifierDashboard({ address }: VerifierDashboardProps) {
   const [walletAddress, setWalletAddress] = useState("")
   const [result, setResult] = useState<VerificationResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
+  // The handleVerify function is triggered when the user submits the verification form.
   const handleVerify = async (e: React.FormEvent) => {
+    // Prevent the default form submission behavior to avoid page reloads and manage the verification process within the component.
     e.preventDefault()
+    // Reset the loading state, clear any previous errors, and reset the result state before starting a new verification process.
     setLoading(true)
+    // Clear previous error messages and results before starting a new verification process.
     setError("")
+    // Reset the result state to null to clear any previous verification results from the UI before starting a new verification process.
     setResult(null)
 
+    // Input validation for the wallet address.
     try {
       if (!walletAddress) {
         throw new Error("Please enter a wallet address")
       }
 
+      // Basic regex check for Ethereum address format.
       if (!walletAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
         throw new Error("Invalid wallet address format")
       }
 
+      // Log the wallet address being verified.
       console.log("[Verifier] Verifying certificate for address:", walletAddress)
 
       // Call backend API instead of directly querying blockchain
@@ -84,27 +101,36 @@ export default function VerifierDashboard({ address }: VerifierDashboardProps) {
         body: JSON.stringify({ address: walletAddress }),
       })
 
+      // Check if the API response is successful.
       if (!apiResponse.ok) {
         const errorData = await apiResponse.json()
         throw new Error(errorData.error || "Failed to verify certificates")
       }
 
+      // Parse the API response to get the certificate data. This data is then used to update the component state.
       const apiData = await apiResponse.json()
+      // Log the number of certificates returned by the API for debugging purposes.
       console.log("[Verifier] API returned certificates:", apiData.count)
       
+      // Extract the certificates array from the API response.
       const certificates = apiData.certificates
 
+      // If certificates are found
       if (certificates.length > 0) {
+        // Log the number of certificates for which metadata will be fetched.
         console.log("[Verifier] Fetching IPFS metadata for", certificates.length, "certificate(s)")
         
         // Fetch IPFS metadata for each with better error tracking
         const metadataMap: Record<number, any> = {}
+        // Loop through each certificate and attempt to fetch its metadata from IPFS. 
         for (const cert of certificates) {
+          // Log the token ID and metadata URI for each certificate before attempting to fetch the metadata.
           try {
             console.log("[Verifier] Fetching metadata for token", cert.tokenId, "URI:", cert.metadataURI)
             const md = await retrieveFromIPFS(cert.metadataURI)
             metadataMap[cert.tokenId] = md
             console.log("[Verifier] Successfully fetched metadata for token", cert.tokenId)
+            // If the metadata contains an image field, log the resolved image URL for debugging purposes.
           } catch (err) {
             console.error("[Verifier] Failed to fetch metadata for token", cert.tokenId, ":", err)
             // Continue anyway, certificate data is still valid even without metadata image
@@ -112,6 +138,7 @@ export default function VerifierDashboard({ address }: VerifierDashboardProps) {
           }
         }
 
+        // After processing the certificates and their metadata, update the component state with the results.
         setResult({
           found: true,
           certificates,
@@ -132,6 +159,7 @@ export default function VerifierDashboard({ address }: VerifierDashboardProps) {
     }
   }
 
+  // The component renders a card that allows users to input a wallet address and trigger the verification process.
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
