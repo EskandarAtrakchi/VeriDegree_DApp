@@ -21,7 +21,7 @@ interface CertEntry {
   issuedAt: number
 }
  
-// The CertificatesList component is responsible for fetching and displaying the list of certificates issued by the connected issuer. It uses the getAllIssuedCertificates function to retrieve the data and manages loading state to provide feedback to the user while data is being fetched.
+// uses the getAllIssuedCertificates function to retrieve the data and manages loading state to provide feedback to the user while data is being fetched.
 export default function CertificatesList({ issuerAddress, refresh }: CertificatesListProps) {
   const [certificates, setCertificates] = useState<CertEntry[]>([])
   const [loading, setLoading] = useState(true)
