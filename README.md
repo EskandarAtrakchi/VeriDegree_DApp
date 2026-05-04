@@ -1,7 +1,7 @@
 # VeriDegree
 VeriDegree is a blockchain-based application that enables institutions to issue and verify academic
 certificates as non-transferable NFTs (Soulbound Tokens) on the SepoliaETH test network.
-access the app here https://veridegreedapp.vercel.app/ 
+Access the app here https://veridegreedapp.vercel.app/ 
 ## Features:
 
 - Issue academic certificates as NFTs (owner only)
