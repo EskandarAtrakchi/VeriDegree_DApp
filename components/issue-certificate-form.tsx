@@ -7,13 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { issueCertificate } from "@/lib/web3-provider"
 import { uploadToIPFS, generateCertificateMetadata, uploadImageToIPFS } from "@/lib/ipfs-provider"
 
-// This component provides a form for the issuer to input certificate details and issue a new certificate. It handles form state, input validation, image upload to IPFS, metadata generation, and interaction with the smart contract to issue the certificate.
+// This component provides a form for the issuer to input certificate details and issue a new certificate.
 interface IssueCertificateFormProps {
   issuerAddress: string
   onSuccess: () => void
 }
 
-// The IssueCertificateForm component is responsible for rendering a form that allows the issuer to input the necessary details to issue a new certificate. It manages the state of the form inputs, handles the submission process, and provides feedback to the user based on the outcome of the certificate issuance. The component ensures that all required fields are filled out and that the student wallet address is valid before attempting to issue the certificate on the blockchain.
+// The IssueCertificateForm component is responsible for rendering a form that allows the issuer to input the necessary details to issue a new certificate.
 export default function IssueCertificateForm({ issuerAddress, onSuccess }: IssueCertificateFormProps) {
   const [studentAddress, setStudentAddress] = useState("")
   const [institutionName, setInstitutionName] = useState("")
@@ -25,22 +25,22 @@ export default function IssueCertificateForm({ issuerAddress, onSuccess }: Issue
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
 
-  // Handle change event for the certificate image file input. It checks if a file has been selected and updates the certificateImage state with the selected file. This allows the component to manage the state of the uploaded image and use it later in the certificate issuance process, such as uploading it to IPFS and including its URL in the certificate metadata.
+  // Handle change event for the certificate image file input. It checks if a file has been selected and updates the certificateImage state with the selected file.
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Check if a file has been selected in the file input. If a file is selected, update the certificateImage state with the selected file. This allows the component to keep track of the uploaded image and use it later when generating metadata and issuing the certificate.
+    // Check if a file has been selected in the file input. 
     if (e.target.files && e.target.files[0]) {
       setCertificateImage(e.target.files[0])
     }
   }
 
-  // Handle form submission for issuing a new certificate. It performs input validation, uploads the certificate image to IPFS if provided, generates the certificate metadata, uploads the metadata to IPFS, and then calls the smart contract function to issue the certificate.
+  // Handle form submission for issuing a new certificate.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError("")
     setSuccess(false)
 
-    // The certificate issuance process involves several steps,  validating the form inputs, uploading the certificate image to IPFS (if an image is provided), generating the certificate metadata, uploading the metadata to IPFS, and finally calling the smart contract function to issue the certificate. Each step includes error handling to provide feedback to the user in case of any issues during the process.
+    // The certificate issuance process involves several steps,  validating the form inputs, uploading the certificate image to IPFS (if an image is provided), generating the certificate metadata, uploading the metadata to IPFS, and finally calling the smart contract function to issue the certificate.
     try {
       console.log("Starting certificate issuance process")
 
@@ -58,14 +58,14 @@ export default function IssueCertificateForm({ issuerAddress, onSuccess }: Issue
 
       // Upload certificate image to IPFS if provided
       let imageIPFSURL = ""
-      // If the issuer has selected a certificate image, we upload it to IPFS and get the resulting URL. This URL will then be included in the certificate metadata so that it can be displayed when the certificate is viewed. If no image is provided, we simply skip this step and proceed with generating the metadata without an image URL.
+      // If the issuer has selected a certificate image, we upload it to IPFS and get the resulting URL.
       if (certificateImage) {
         console.log("Uploading certificate image to IPFS")
         imageIPFSURL = await uploadImageToIPFS(certificateImage)
         console.log("Certificate image uploaded:", imageIPFSURL)
       }
 
-      // Generate certificate metadata using the provided details and the image URL (if available). The metadata will include all the relevant information about the certificate,  the institution name, student name, degree name, graduation date, and the image URL. This metadata will then be uploaded to IPFS to get a URI that can be stored on the blockchain when issuing the certificate.
+      // Generate certificate metadata using the provided details and the image URL (if available). 
       const metadata = generateCertificateMetadata(
         institutionName,
         studentName,
@@ -103,14 +103,14 @@ export default function IssueCertificateForm({ issuerAddress, onSuccess }: Issue
       setGraduationDate("")
       setCertificateImage(null)
 
-      // After successfully issuing the certificate, we call the onSuccess callback after a short delay to allow the user to see the success message. This callback can be used to trigger a refresh of the certificates list or any other necessary updates in the parent component.
+      // After successfully issuing the certificate, we call the onSuccess callback after a short delay to allow the user to see the success message.
       setTimeout(() => {
         onSuccess()
       }, 2000)
     } catch (err: any) {
       console.error("Certificate issuance error:", err)
 
-      // We extract the error message from the caught error object. Depending on the structure of the error, we check for specific substrings in the message to determine the cause of the failure and set a user-friendly error message
+      // We extract the error message from the caught error object. 
       const rawMessage = err?.reason || err?.message || String(err || "")
       if (rawMessage.includes("Certificate already issued")) {
         setError(
@@ -119,10 +119,10 @@ export default function IssueCertificateForm({ issuerAddress, onSuccess }: Issue
         // If the error message indicates that the student wallet address is invalid according to the smart contract, we set an appropriate error message to inform the user about the issue with the provided wallet address.
       } else if (rawMessage.includes("Invalid student address")) {
         setError("The student wallet address is invalid according to the smart contract.")
-        // If the error message indicates that the issuer is not the contract owner, we set an error message to inform the user that only the issuer wallet can issue certificates. This helps clarify the permissions required to perform this action.
+        // If the error message indicates that the issuer is not the contract owner, we set an error message to inform the user that only the issuer wallet can issue certificates.
       } else if (rawMessage.includes("Not contract owner")) {
         setError("You are not the contract owner. Only the issuer wallet can issue certificates.")
-        // For any other errors that do not match the specific cases above, we set a generic error message that includes the raw error message for debugging purposes. This ensures that the user receives feedback about the failure while also providing information that can be useful for troubleshooting.
+        // For any other errors that do not match the specific cases above, we set a generic error message that includes the raw error message for debugging purposes.
       } else {
         setError(`Failed to issue certificate: ${rawMessage}`)
       }
@@ -131,7 +131,7 @@ export default function IssueCertificateForm({ issuerAddress, onSuccess }: Issue
     }
   }
 
-  // The component renders a card that contains the form for issuing a new certificate. The form includes input fields for the student wallet address, institution name, student name, degree name, graduation date, and an optional file input for uploading a certificate image. It also displays error messages if there are issues with the form submission and a success message when the certificate is issued successfully. The submit button is disabled while the issuance process is ongoing to prevent multiple submissions.
+  // The component renders a card that contains the form for issuing a new certificate. The form includes input fields for the student wallet address, institution name, student name, degree name, graduation date, and an optional file input for uploading a certificate image.
   return (
     <Card className="border-border">
       <CardHeader>
