@@ -13,7 +13,7 @@ interface NavigationProps {
   onRoleChange: (role: any) => void
 }
 
-// This displays the application name, the connected wallet address, and provides options to change roles and disconnect the wallet. It also includes a dropdown menu to show wallet status and manage wallet connections.
+// This displays the application name, the connected wallet address, and provides options to change roles and disconnect the wallet.
 export default function Navigation({ address, role, onDisconnect, onRoleChange }: NavigationProps) {
   const [showStatus, setShowStatus] = useState(false)
 
