@@ -1,6 +1,6 @@
 "use client"
 
-// This component serves as the main dashboard for issuers, allowing them to issue new certificates and view existing ones. It manages the state for showing the issue form and refreshing the certificates list after issuing a new certificate.
+// This component serves as the main dashboard for issuers, allowing them to issue new certificates and view existing ones.
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
