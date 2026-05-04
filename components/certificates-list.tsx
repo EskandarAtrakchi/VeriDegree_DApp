@@ -26,10 +26,10 @@ export default function CertificatesList({ issuerAddress, refresh }: Certificate
   const [certificates, setCertificates] = useState<CertEntry[]>([])
   const [loading, setLoading] = useState(true)
 
-  // useEffect is used to fetch the certificates when the component mounts or when the issuerAddress or refresh props change. It sets the loading state to true while fetching and updates the certificates state with the retrieved data. If there's an error during fetching, it logs the error to the console.
+  // useEffect is used to fetch the certificates when the component mounts or when the issuerAddress or refresh props change.  
   useEffect(() => {
     const fetchCertificates = async () => {
-      // Ensure that the issuerAddress is available before attempting to fetch certificates. If it's not available, we can skip the fetch and set loading to false. 
+      // Ensure that the issuerAddress is available before attempting to fetch certificates.
       try {
         setLoading(true)
         const certs = await getAllIssuedCertificates()
@@ -41,11 +41,11 @@ export default function CertificatesList({ issuerAddress, refresh }: Certificate
       }
     }
 
-    // Only fetch certificates if the issuerAddress is available. This prevents unnecessary fetch attempts when the component first mounts and the issuerAddress is not yet set.
+    // Only fetch certificates if the issuerAddress is available. 
     fetchCertificates()
   }, [issuerAddress, refresh])
 
-  // The component renders a card that displays the list of issued certificates. If the data is still loading, it shows a loading spinner. If there are no certificates, it displays a message indicating that no certificates have been issued yet. Otherwise, it maps over the certificates array and displays each certificate's details in a styled format.
+  // The component renders a card that displays the list of issued certificates. If the data is still loading, it shows a loading spinner. 
   return (
     <Card className="border-border">
       <CardHeader>
