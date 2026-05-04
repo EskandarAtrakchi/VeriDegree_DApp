@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import WalletStatus from "@/components/wallet-status"
 
+// The Navigation component serves as the top navigation bar for the application.
 interface NavigationProps {
   address: string
   role: string | null
@@ -12,9 +13,11 @@ interface NavigationProps {
   onRoleChange: (role: any) => void
 }
 
+// This displays the application name, the connected wallet address, and provides options to change roles and disconnect the wallet. It also includes a dropdown menu to show wallet status and manage wallet connections.
 export default function Navigation({ address, role, onDisconnect, onRoleChange }: NavigationProps) {
   const [showStatus, setShowStatus] = useState(false)
 
+  // Renders the navigation bar with the application name, connected wallet address, and options for role management and wallet disconnection.
   return (
     <nav className="bg-card border-b border-border sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
