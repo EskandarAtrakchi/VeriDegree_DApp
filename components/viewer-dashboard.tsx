@@ -6,14 +6,20 @@ import { Badge } from "@/components/ui/badge"
 import { CONTRACT_ADDRESS } from "@/lib/web3-provider"
 import { retrieveFromIPFS, ipfsToGatewayUrl } from "@/lib/ipfs-provider"
 
+// This component serves as the main dashboard for viewers, allowing them to view and share their certificates. It fetches the certificates associated with the connected wallet address and displays them
 interface ViewerDashboardProps {
   address: string
 }
 
+// The component uses the useEffect hook to fetch the certificates when the component mounts or when the address prop changes.
 function resolveImageUrl(metadata: any): string | undefined {
+  // The resolveImageUrl function takes the metadata object as input and attempts to extract the image URL from it.
   const image = metadata?.image
+
+  // If the image field is not present or is not a string, we return undefined 
   if (!image || typeof image !== "string") return undefined
 
+  // If the image URL starts with "ipfs://", we convert it to a gateway URL using the ipfsToGatewayUrl function.
   if (image.startsWith("ipfs://")) {
     return ipfsToGatewayUrl(image)
   }
@@ -21,12 +27,14 @@ function resolveImageUrl(metadata: any): string | undefined {
   return image
 }
 
+// The resolveMetadataHttpUrl function takes an IPFS URI as input and converts it to a gateway URL if it starts with ipfs://
 function resolveMetadataHttpUrl(ipfsURI: string | undefined): string | undefined {
   if (!ipfsURI) return undefined
   if (!ipfsURI.startsWith("ipfs://")) return ipfsURI
   return ipfsToGatewayUrl(ipfsURI)
 }
 
+// The ViewerDashboard component is responsible for fetching and displaying the certificates associated with the connected wallet address.
 interface CertificateData {
   tokenId: number
   institutionName: string
@@ -38,11 +46,13 @@ interface CertificateData {
   metadata?: any
 }
 
+// The ViewerDashboard component is responsible for fetching and displaying the certificates associated with the connected wallet address. 
 export default function ViewerDashboard({ address }: ViewerDashboardProps) {
   const [certificates, setCertificates] = useState<CertificateData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
+  // Fetch certificates when the component mounts or when the address prop changes
   useEffect(() => {
     const fetchCertificates = async () => {
       try {
@@ -100,11 +110,13 @@ export default function ViewerDashboard({ address }: ViewerDashboardProps) {
       }
     }
 
+    // We only attempt to fetch certificates if the address is available.
     if (address) {
       fetchCertificates()
     }
   }, [address])
 
+  // The component renders a card that contains the form for issuing a new certificate.
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
