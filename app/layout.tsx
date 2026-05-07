@@ -11,7 +11,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 // Combine the loaded fonts into a single className string
 export const metadata: Metadata = {
-  title: "CertifyChain - Educational Certificate NFTs",
+  title: "VeriDegree - Educational Certificate NFTs",
   description: "Issue, verify, and manage educational certificates on blockchain",
   icons: {
     icon: [

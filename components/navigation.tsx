@@ -23,7 +23,7 @@ export default function Navigation({ address, role, onDisconnect, onRoleChange }
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex justify-between items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-primary">CertifyChain</h1>
+            <h1 className="text-2xl font-bold text-primary">VeriDegree</h1>
             {role && <p className="text-xs text-muted-foreground mt-1 capitalize">Role: {role}</p>}
           </div>
 

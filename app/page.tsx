@@ -44,7 +44,7 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
         <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-4">
-          <h1 className="text-2xl sm:text-3xl font-bold text-primary">CertifyChain</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-primary">VeriDegree</h1>
           <WalletConnection
             onConnect={(addr) => {
               setIsConnected(true)
