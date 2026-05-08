@@ -6,7 +6,7 @@ Access the app here https://veridegreedapp.vercel.app/
 
 - Issue academic certificates as NFTs (owner only)
 - Soulbound (non-transferable certificates)
-- Verify certificates by token ID
+- Verify certificates by Wallet public address
 - Store metadata using IPFS
 - MetaMask integration
 - Smart contract testing with Hardhat
