@@ -12,10 +12,10 @@ contract SimpleEduCertificate is ERC721URIStorage {
     address public owner;
 
     struct Certificate {
-        string institutionName;   // "National College of Ireland"
-        string studentName;       // "Eskandar Atrakchi"
-        string degreeName;        // "BSc in Computing"
-        string graduationDate;    // "2026-06-01"
+        string institutionName;   // National College of Ireland
+        string studentName;       // Eskandar Atrakchi
+        string degreeName;        // BSc in Computing
+        string graduationDate;    //2026-06-01
         string metadataURI;       // IPFS URI (same as tokenURI)
         uint256 issuedAt;         // timestamp
     }
@@ -28,6 +28,7 @@ contract SimpleEduCertificate is ERC721URIStorage {
         _;
     }
 
+    // The constructor sets the deployer as the owner (issuer) of the contract.
     constructor() ERC721("SimpleEduCertificate", "SEDU") {
         owner = msg.sender; // the wallet that deploys is the issuer
     }
@@ -42,6 +43,7 @@ contract SimpleEduCertificate is ERC721URIStorage {
     * @param graduationDate  Date of graduation (YYYY-MM-DD)
     */
 
+    // Only the contract owner (issuer) can call this function to mint a new certificate NFT to a student.
     function issueCertificate(
         address student,
         string calldata tokenURI_,
@@ -52,6 +54,7 @@ contract SimpleEduCertificate is ERC721URIStorage {
     ) external onlyOwner returns (uint256) {
         require(student != address(0), "Invalid student address");
 
+        // Generate new token ID
         uint256 newTokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
 
@@ -59,7 +62,7 @@ contract SimpleEduCertificate is ERC721URIStorage {
         _safeMint(student, newTokenId);
         _setTokenURI(newTokenId, tokenURI_);
 
-        // Save simple info on-chain
+        // Store certificate details on-chain
         certificates[newTokenId] = Certificate({
             institutionName: institutionName,
             studentName: studentName,
@@ -76,6 +79,7 @@ contract SimpleEduCertificate is ERC721URIStorage {
     // Soulbound logic (non-transferable)
     // OZ v5 uses _update instead of _beforeTokenTransfer
     // ----------------------------
+    // Override the _update function to block transfers (except minting and burning)
     function _update(
         address to,
         uint256 tokenId,
