@@ -3,7 +3,7 @@ __v0_runtime_loader.js
 __v0_devtools.tsx
 __v0_jsx-dev-runtime.ts
 
-# Environment variables - NEVER commit these with real credentials
+# Environment variables
 .env
 .env.local
 .env.*.local
